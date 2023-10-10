@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import java.lang.Math;
+import java.util.Arrays;
 import java.util.Stack;
+import android.util.Log;
+import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
     TextView textViewOperation;
@@ -124,12 +127,12 @@ public class MainActivity extends AppCompatActivity {
             textViewOperation.setText(inputExpression.toString());
         }
     }
+    // ...
     public void equal(View view) {
         String expression = inputExpression.toString();
 
         // Tokenize the expression
-        String[] tokens = expression.split("(?<=\\d)(?=\\D)|(?<=\\D)(?=\\d)");
-
+        String[] tokens = expression.split("(?<=[+\\-*/()])|(?=[+\\-*/()])|(?<=sin)|(?=sin)|(?<=cos)|(?=cos)|(?<=tan)|(?=tan)");
 
         Stack<Double> operandStack = new Stack<>();
         Stack<String> operatorStack = new Stack<>();
@@ -152,6 +155,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 // Push the current operator onto the operator stack
                 operatorStack.push(token);
+            } else if (token.equals("sin") || token.equals("cos") || token.equals("tan")) {
+                // Token is a trigonometric function
+                operatorStack.push(token);
+                // Push a default value onto the operand stack
+                operandStack.push(0.0);
             }
         }
 
@@ -194,10 +202,19 @@ public class MainActivity extends AppCompatActivity {
                     // Handle division by zero
                     return Double.NaN;
                 }
-
+            case "sin":
+                // Convert degrees to radians and calculate sine
+                return Math.sin(Math.toRadians(operand2));
+            case "cos":
+                // Convert degrees to radians and calculate cosine
+                return Math.cos(Math.toRadians(operand2));
+            case "tan":
+                // Convert degrees to radians and calculate tangent
+                return Math.tan(Math.toRadians(operand2));
             default:
                 return 0;
         }
     }
+
 
 }

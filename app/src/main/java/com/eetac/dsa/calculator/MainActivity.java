@@ -125,6 +125,79 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void equal(View view) {
+        String expression = inputExpression.toString();
 
+        // Tokenize the expression
+        String[] tokens = expression.split("(?<=\\d)(?=\\D)|(?<=\\D)(?=\\d)");
+
+
+        Stack<Double> operandStack = new Stack<>();
+        Stack<String> operatorStack = new Stack<>();
+
+        for (String token : tokens) {
+            if (token.matches("[0-9.]+")) {
+                // Token is a number, push it onto the operand stack
+                operandStack.push(Double.parseDouble(token));
+            } else if (isOperator(token)) {
+                // Token is an operator
+                while (!operatorStack.isEmpty() && hasHigherPrecedence(operatorStack.peek(), token)) {
+                    // Pop operands and perform the operation
+                    double operand2 = operandStack.pop();
+                    double operand1 = operandStack.pop();
+                    String operator = operatorStack.pop();
+                    double result = performOperation(operand1, operand2, operator);
+
+                    // Push the result back onto the operand stack
+                    operandStack.push(result);
+                }
+                // Push the current operator onto the operator stack
+                operatorStack.push(token);
+            }
+        }
+
+        // Evaluate any remaining operators
+        while (!operatorStack.isEmpty()) {
+            double operand2 = operandStack.pop();
+            double operand1 = operandStack.pop();
+            String operator = operatorStack.pop();
+            double result = performOperation(operand1, operand2, operator);
+            operandStack.push(result);
+        }
+
+        // The final result should be on the operand stack
+        if (!operandStack.isEmpty()) {
+            double finalResult = operandStack.pop();
+            textViewResult.setText(String.valueOf(finalResult));
+        }
     }
+
+    private boolean isOperator(String token) {
+        return token.matches("[+\\-*/]");
+    }
+
+    private boolean hasHigherPrecedence(String operator1, String operator2) {
+        return (operator1.equals("*") || operator1.equals("/")) && (operator2.equals("+") || operator2.equals("-"));
+    }
+
+    private double performOperation(double operand1, double operand2, String operator) {
+        switch (operator) {
+            case "+":
+                return operand1 + operand2;
+            case "-":
+                return operand1 - operand2;
+            case "*":
+                return operand1 * operand2;
+            case "/":
+                if (operand2 != 0) {
+                    return operand1 / operand2;
+                } else {
+                    // Handle division by zero
+                    return Double.NaN;
+                }
+
+            default:
+                return 0;
+        }
+    }
+
 }

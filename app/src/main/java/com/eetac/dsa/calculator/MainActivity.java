@@ -47,4 +47,40 @@ public class MainActivity extends AppCompatActivity {
 
     public void zero(View view) {
     }
+
+    public void nine(View view) {
+    }
+
+    public void multiply(View view) {
+    }
+
+    public void four(View view) {
+    }
+
+    public void five(View view) {
+    }
+
+    public void six(View view) {
+    }
+
+    public void subtract(View view) {
+    }
+
+    public void two(View view) {
+    }
+
+    public void three(View view) {
+    }
+
+    public void add(View view) {
+    }
+
+    public void dot(View view) {
+    }
+
+    public void delete(View view) {
+    }
+
+    public void equal(View view) {
+    }
 }
